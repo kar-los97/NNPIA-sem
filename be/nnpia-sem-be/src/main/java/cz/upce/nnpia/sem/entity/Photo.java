@@ -13,11 +13,11 @@ public class Photo {
     private Blob photo;
 
     @ManyToOne
-    @Column(nullable = false, name = "userId")
+    @JoinColumn(nullable = false, name = "userId")
     private User user;
 
     @ManyToOne
-    @Column(nullable = false, name = "restaurantId")
+    @JoinColumn(nullable = false, name = "restaurantId")
     private Restaurant restaurant;
 
     public Integer getId() {

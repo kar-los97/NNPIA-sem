@@ -18,7 +18,7 @@ public class Restaurant {
     private String note;
 
     @ManyToOne
-    @Column(nullable = false,name = "adminId")
+    @JoinColumn(nullable = false,name = "adminId")
     private User admin;
 
     public Integer getId() {

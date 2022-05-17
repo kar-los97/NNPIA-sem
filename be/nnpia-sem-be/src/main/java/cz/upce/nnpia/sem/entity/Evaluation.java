@@ -15,11 +15,11 @@ public class Evaluation {
     private String comment;
 
     @ManyToOne
-    @Column(nullable = false,name = "userId")
+    @JoinColumn(nullable = false,name = "userId")
     private User user;
 
     @ManyToOne
-    @Column(name="restaurantId")
+    @JoinColumn(name="restaurantId")
     private Restaurant restaurant;
 
 }

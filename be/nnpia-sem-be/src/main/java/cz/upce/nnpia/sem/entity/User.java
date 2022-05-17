@@ -22,7 +22,7 @@ public class User {
     private String lastname;
 
     @ManyToOne
-    @Column(name="roleId")
+    @JoinColumn(name="roleId")
     private Role role;
 
     @Column
