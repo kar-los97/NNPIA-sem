@@ -2,6 +2,7 @@ package cz.upce.nnpia.sem.entity;
 
 import javax.persistence.*;
 import java.sql.Blob;
+import java.util.Date;
 
 @Entity
 public class Photo {
@@ -15,6 +16,9 @@ public class Photo {
     @ManyToOne
     @JoinColumn(nullable = false, name = "userId")
     private User user;
+
+    @Column
+    private Date deletedAt;
 
     @ManyToOne
     @JoinColumn(nullable = false, name = "restaurantId")
@@ -50,5 +54,13 @@ public class Photo {
 
     public void setRestaurant(Restaurant restaurant) {
         this.restaurant = restaurant;
+    }
+
+    public Date getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(Date deletedAt) {
+        this.deletedAt = deletedAt;
     }
 }

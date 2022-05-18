@@ -3,13 +3,13 @@ services:
   db:
     image: postgres
     ports:
-      - 5432:5432
+      - "5435:5432"
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
       - ./data/db:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=user
-      - POSTGRES_DATABASE=restaurant_eval
+      - POSTGRES_DB=restaurant_eval
       - POSTGRES_PASSWORD=password
 
   nnpia-adminer:

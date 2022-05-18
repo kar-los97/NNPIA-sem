@@ -1,40 +1,33 @@
-package cz.upce.nnpia.sem.entity;
+package cz.upce.nnpia.sem.dto;
 
-import javax.persistence.*;
+
+import cz.upce.nnpia.sem.entity.Role;
+
 import java.util.Date;
 
-@Entity(name = "eval_user")
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
-    @Column(nullable = false)
+public class UserDto {
+    private int id;
     private String email;
-
-    @Column(nullable = false)
-    private String password;
-
-    @Column
     private String firstname;
-
-    @Column
     private String lastname;
-
-    @Enumerated(EnumType.STRING)
     private Role role;
-
-    @Column
     private Date lastUpdate;
 
-    @Column
-    private Date deletedAt;
+    private String password;
 
-    public Integer getId() {
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -44,14 +37,6 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getFirstname() {
@@ -84,13 +69,5 @@ public class User {
 
     public void setLastUpdate(Date lastUpdate) {
         this.lastUpdate = lastUpdate;
-    }
-
-    public Date getDeletedAt() {
-        return deletedAt;
-    }
-
-    public void setDeletedAt(Date deletedAt) {
-        this.deletedAt = deletedAt;
     }
 }

@@ -1,6 +1,7 @@
 package cz.upce.nnpia.sem.entity;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 public class Restaurant {
@@ -20,6 +21,9 @@ public class Restaurant {
     @ManyToOne
     @JoinColumn(nullable = false,name = "adminId")
     private User admin;
+
+    @Column
+    private Date deletedAt;
 
     public Integer getId() {
         return id;
@@ -59,5 +63,14 @@ public class Restaurant {
 
     public void setAdmin(User admin) {
         this.admin = admin;
+    }
+
+
+    public Date getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(Date deletedAt) {
+        this.deletedAt = deletedAt;
     }
 }
