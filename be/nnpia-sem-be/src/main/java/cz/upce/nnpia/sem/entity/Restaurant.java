@@ -22,6 +22,10 @@ public class Restaurant {
     @JoinColumn(nullable = false,name = "adminId")
     private User admin;
 
+    @ManyToOne
+    @JoinColumn(name="titlePhoto")
+    private Photo photo;
+
     @Column
     private Date deletedAt;
 

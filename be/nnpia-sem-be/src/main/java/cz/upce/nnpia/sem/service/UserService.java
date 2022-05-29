@@ -2,10 +2,7 @@ package cz.upce.nnpia.sem.service;
 
 import cz.upce.nnpia.sem.entity.User;
 import cz.upce.nnpia.sem.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.util.Date;
 import java.util.List;
 
@@ -18,6 +15,8 @@ public class UserService {
     }
 
     public User addUser(User user){
+        User existingEmail = userRepository.getUserByEmailAndDeletedAtIsNull(user.getEmail());
+        if(existingEmail!=null) return null;
         return userRepository.save(user);
     }
 
@@ -31,6 +30,10 @@ public class UserService {
 
     public User updateUser(User user,int id){
         User userToUpdate = userRepository.getById(id);
+        if(!user.getEmail().equals(userToUpdate.getEmail())){
+            User existingEmail = userRepository.getUserByEmailAndDeletedAtIsNull(user.getEmail());
+            if(existingEmail!=null) return null;
+        }
         userToUpdate.setFirstname(user.getFirstname());
         userToUpdate.setLastname(user.getLastname());
         userToUpdate.setEmail(user.getEmail());

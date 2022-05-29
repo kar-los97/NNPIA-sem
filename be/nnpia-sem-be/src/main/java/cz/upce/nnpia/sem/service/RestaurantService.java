@@ -25,6 +25,10 @@ public class RestaurantService {
         return restaurantRepository.findAllByDeletedAtIsNull();
     }
 
+    public List<Restaurant> getAllByAdminEmail(String email){
+        return restaurantRepository.findAllByDeletedAtIsNullAndAdmin_Email(email);
+    }
+
     public Restaurant getById(int id){
         return restaurantRepository.getByIdAndDeletedAtIsNull(id);
     }

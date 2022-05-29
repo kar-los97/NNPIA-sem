@@ -14,14 +14,14 @@ public class Photo {
     private Blob photo;
 
     @ManyToOne
-    @JoinColumn(nullable = false, name = "userId")
+    @JoinColumn(nullable = true, name = "userId")
     private User user;
 
     @Column
     private Date deletedAt;
 
     @ManyToOne
-    @JoinColumn(nullable = false, name = "restaurantId")
+    @JoinColumn(nullable = true, name = "restaurantId")
     private Restaurant restaurant;
 
     public Integer getId() {

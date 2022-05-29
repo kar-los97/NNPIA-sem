@@ -10,4 +10,6 @@ public interface RestaurantRepository extends JpaRepository<Restaurant,Integer> 
     List<Restaurant> findAllByDeletedAtIsNull();
 
     Restaurant getByIdAndDeletedAtIsNull(int id);
+
+    List<Restaurant> findAllByDeletedAtIsNullAndAdmin_Email(String email);
 }

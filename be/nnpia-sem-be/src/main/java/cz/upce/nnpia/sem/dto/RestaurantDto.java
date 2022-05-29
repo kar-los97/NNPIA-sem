@@ -1,11 +1,15 @@
 package cz.upce.nnpia.sem.dto;
 
+import org.springframework.web.multipart.MultipartFile;
+
 public class RestaurantDto {
     private int id;
     private String address;
     private String name;
     private String note;
     private int adminId;
+
+    private MultipartFile titlePhoto;
 
     public int getId() {
         return id;
@@ -45,5 +49,13 @@ public class RestaurantDto {
 
     public void setAdminId(int adminId) {
         this.adminId = adminId;
+    }
+
+    public MultipartFile getTitlePhoto() {
+        return titlePhoto;
+    }
+
+    public void setTitlePhoto(MultipartFile titlePhoto) {
+        this.titlePhoto = titlePhoto;
     }
 }

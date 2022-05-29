@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/evaluation")
+@CrossOrigin
 public class EvaluationController {
 
     private final EvaluationService evaluationService;
@@ -20,6 +21,8 @@ public class EvaluationController {
     public EvaluationController(EvaluationService evaluationService) {
         this.evaluationService = evaluationService;
     }
+
+
 
     @GetMapping
     public ResponseEntity<?> getAll(){

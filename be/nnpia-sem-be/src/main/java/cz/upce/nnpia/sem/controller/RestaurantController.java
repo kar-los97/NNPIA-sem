@@ -1,9 +1,7 @@
 package cz.upce.nnpia.sem.controller;
 
 import cz.upce.nnpia.sem.dto.RestaurantDto;
-import cz.upce.nnpia.sem.dto.UserDto;
 import cz.upce.nnpia.sem.entity.Restaurant;
-import cz.upce.nnpia.sem.entity.User;
 import cz.upce.nnpia.sem.service.RestaurantService;
 import cz.upce.nnpia.sem.service.UserService;
 import org.modelmapper.ModelMapper;
@@ -16,6 +14,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/restaurant")
+@CrossOrigin
 public class RestaurantController {
 
     private final RestaurantService restaurantService;
@@ -43,6 +42,13 @@ public class RestaurantController {
     @GetMapping
     public ResponseEntity<?> getAll(){
         List<Restaurant> findedRestaurants = restaurantService.getAllRestaurants();
+        if(findedRestaurants==null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(findedRestaurants.stream().map(this::convertToDto).collect(Collectors.toList()),HttpStatus.OK);
+    }
+
+    @GetMapping("/user/{email}")
+    public ResponseEntity<?> getAllByAdminEmail(@PathVariable String email){
+        List<Restaurant> findedRestaurants = restaurantService.getAllByAdminEmail(email);
         if(findedRestaurants==null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(findedRestaurants.stream().map(this::convertToDto).collect(Collectors.toList()),HttpStatus.OK);
     }
