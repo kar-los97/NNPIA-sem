@@ -1,10 +1,12 @@
 import React, {useEffect, useState} from "react";
-import {Form, Field} from "react-final-form";
-import MyForm from "../components/Form/MyForm";
-import MyFormField from "../components/Form/MyFormField";
+import MyForm from "../../components/Form/MyForm";
+import MyFormField from "../../components/Form/MyFormField";
+import {apiLoginUser} from "./Actions";
+import {useHistory} from "react-router-dom";
 
-const LoginForm = ({setToken}) => {
+const LoginForm = ({setLoggedInUser}) => {
     let [saving, setSaving] = useState(false);
+    let history = useHistory();
 
     useEffect(() => {
 
@@ -13,8 +15,16 @@ const LoginForm = ({setToken}) => {
     const submit = (values) => {
         setSaving(true);
         alert(JSON.stringify(values));
-        setToken("token");
-        setSaving(false);
+        apiLoginUser(values,(result)=>{
+            alert(JSON.stringify(result));
+            localStorage.setItem('role',result.role);
+            localStorage.setItem('email',result.email);
+            setLoggedInUser(result);
+            history.push("/");
+            setSaving(false);
+        },(error)=>{
+            setSaving(false);
+        })
     }
 
 

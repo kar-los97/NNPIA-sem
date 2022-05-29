@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
 import {apiGetRestaurantById} from "./Actions";
-import MyForm from "../../../components/Form/MyForm";
-import MyFormField from "../../../components/Form/MyFormField";
+import MyForm from "../../components/Form/MyForm";
+import MyFormField from "../../components/Form/MyFormField";
 
 const RestaurantForm = () => {
     let [loading, setLoading] = useState(false);

@@ -1,6 +1,6 @@
 import React from "react";
 
-import {axios} from "../../../axiosConfig";
+import {axios} from "../../axiosConfig";
 
 const url = "/api/v1/restaurant"
 
@@ -10,7 +10,11 @@ export const apiGetMyRestaurants=(email,callback,error)=>{
         .catch(err=>error(err));
 }
 
-export const apiGetAllRestaurants=(callback,error)=>{}
+export const apiGetAllRestaurants=(callback,error)=>{
+    axios.get(url)
+        .then(response=>callback(response.data))
+        .catch(err=>error(err));
+}
 
 export const apiGetRestaurantById=(id,callback,error)=>{
     axios.get(url+"/"+id)
