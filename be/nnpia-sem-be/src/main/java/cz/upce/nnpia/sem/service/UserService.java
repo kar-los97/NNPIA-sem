@@ -2,6 +2,8 @@ package cz.upce.nnpia.sem.service;
 
 import cz.upce.nnpia.sem.entity.User;
 import cz.upce.nnpia.sem.repository.UserRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
@@ -9,14 +11,16 @@ import java.util.List;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-
-    public UserService(UserRepository userRepository) {
+    private final PasswordEncoder encoder;
+    public UserService(UserRepository userRepository, PasswordEncoder encoder) {
         this.userRepository = userRepository;
+        this.encoder = encoder;
     }
 
     public User addUser(User user){
         User existingEmail = userRepository.getUserByEmailAndDeletedAtIsNull(user.getEmail());
         if(existingEmail!=null) return null;
+        user.setPassword(encoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
@@ -38,7 +42,7 @@ public class UserService {
         userToUpdate.setLastname(user.getLastname());
         userToUpdate.setEmail(user.getEmail());
         if(user.getPassword()!=null){
-            userToUpdate.setPassword(user.getPassword());
+            userToUpdate.setPassword(encoder.encode(user.getPassword()));
         }
         userToUpdate.setLastUpdate(new Date());
         return userRepository.save(userToUpdate);
@@ -51,6 +55,12 @@ public class UserService {
     }
 
     public User loginUser(String email, String password){
-        return userRepository.getUserByEmailAndPassword(email,password);
+        User user = userRepository.getUserByEmailAndDeletedAtIsNull(email);
+        if(encoder.matches(password,user.getPassword())){
+            return user;
+        }else{
+            return null;
+        }
+
     }
 }

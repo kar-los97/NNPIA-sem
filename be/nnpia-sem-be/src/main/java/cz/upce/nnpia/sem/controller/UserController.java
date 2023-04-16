@@ -1,15 +1,17 @@
 package cz.upce.nnpia.sem.controller;
 
-import cz.upce.nnpia.sem.dto.AuthorizationDto;
 import cz.upce.nnpia.sem.dto.LoginDto;
 import cz.upce.nnpia.sem.dto.UserDto;
-import cz.upce.nnpia.sem.entity.Role;
 import cz.upce.nnpia.sem.entity.User;
+import cz.upce.nnpia.sem.jwtconfig.JwtUtils;
 import cz.upce.nnpia.sem.service.UserService;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -24,9 +26,17 @@ import java.util.stream.Collectors;
 public class UserController {
 
     private final UserService userService;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtils jwtUtils;
 
-    public UserController(UserService userService) {
+    private final PasswordEncoder encoder;
+
+    public UserController(UserService userService, JwtUtils jwtUtils, PasswordEncoder encoder,AuthenticationManager manager) {
         this.userService = userService;
+        this.jwtUtils = jwtUtils;
+        this.encoder = encoder;
+        this.authenticationManager = manager;
+
     }
 
     @GetMapping
@@ -71,12 +81,20 @@ public class UserController {
 
     @PostMapping("/login")
     private ResponseEntity<?> login(@RequestBody LoginDto loginDto){
-        User user = userService.loginUser(loginDto.getEmail(),loginDto.getPassword());
-        if(user==null) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        User user = userService.loginUser(loginDto.getEmail(), loginDto.getPassword());
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword())
+        );
+        String jwt = jwtUtils.generateJwtToken(authentication);
+
         LoginDto response = new LoginDto();
-        response.setEmail(user.getEmail());
         response.setRole(user.getRole());
-        return new ResponseEntity<>(response,HttpStatus.OK);
+        response.setEmail(user.getEmail());
+        response.setToken(jwt);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     private UserDto convertToDto(User user){

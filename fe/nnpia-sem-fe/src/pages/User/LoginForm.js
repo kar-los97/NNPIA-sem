@@ -3,6 +3,7 @@ import MyForm from "../../components/Form/MyForm";
 import MyFormField from "../../components/Form/MyFormField";
 import {apiLoginUser} from "./Actions";
 import {useHistory} from "react-router-dom";
+import {axios} from "../../axiosConfig";
 
 const LoginForm = ({setLoggedInUser}) => {
     let [saving, setSaving] = useState(false);
@@ -19,6 +20,7 @@ const LoginForm = ({setLoggedInUser}) => {
             alert(JSON.stringify(result));
             localStorage.setItem('role',result.role);
             localStorage.setItem('email',result.email);
+            axios.defaults.headers.common['Authorization'] = "Bearer "+result.token;
             setLoggedInUser(result);
             history.push("/");
             setSaving(false);
