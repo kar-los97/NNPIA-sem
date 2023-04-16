@@ -23,7 +23,7 @@ export const apiGetRestaurantById=(id,callback,error)=>{
 }
 
 export const apiCreateRestaurant =(values,callback,error)=>{
-    axios.post(url)
+    axios.post(url,values)
         .then(response=>callback(response.data))
         .catch(err=>error(err));
 }

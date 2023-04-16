@@ -9,7 +9,7 @@ public class RestaurantDto {
     private String note;
     private int adminId;
 
-    private MultipartFile titlePhoto;
+    private MultipartFile photoTitle;
 
     public int getId() {
         return id;
@@ -51,11 +51,11 @@ public class RestaurantDto {
         this.adminId = adminId;
     }
 
-    public MultipartFile getTitlePhoto() {
-        return titlePhoto;
+    public MultipartFile getPhotoTitle() {
+        return photoTitle;
     }
 
-    public void setTitlePhoto(MultipartFile titlePhoto) {
-        this.titlePhoto = titlePhoto;
+    public void setPhotoTitle(MultipartFile photoTitle) {
+        this.photoTitle = photoTitle;
     }
 }

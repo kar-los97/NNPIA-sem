@@ -6,7 +6,8 @@ const MyFormField = ({
     type,
     inputClassName,
     labelClassName,
-    label
+    label,
+    onChange = null
                      })=>{
 
     return(
@@ -15,7 +16,8 @@ const MyFormField = ({
                 <>
                     <div className={labelClassName}>{label}</div>
                     <div className={inputClassName}>
-                        <input {...input} type={type} className={"form-control"}/>
+                        {onChange?<input {...input} type={type} className={"form-control"} onChange={onChange}/>:
+                        <input {...input} type={type} className={"form-control"}/>}
                         {meta.error && meta.touched &&
                             <div className="text-warning">{meta.error}</div>}
                     </div>

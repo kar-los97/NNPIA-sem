@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
-import {apiGetRestaurantById} from "./Actions";
+import {apiCreateRestaurant, apiGetRestaurantById} from "./Actions";
 import MyForm from "../../components/Form/MyForm";
 import MyFormField from "../../components/Form/MyFormField";
 
@@ -8,6 +8,7 @@ const RestaurantForm = () => {
     let [loading, setLoading] = useState(false);
     let [saving, setSaving] = useState(false);
     let [data, setData] = useState(null);
+    let [selectedFile, setSelectedFile] = useState(null);
     const {id} = useParams();
 
     useEffect(() => {
@@ -24,6 +25,15 @@ const RestaurantForm = () => {
     }, [])
     const submit = (values) => {
         alert(JSON.stringify(values));
+        values.photoTitle = selectedFile;
+        setSaving(true);
+        apiCreateRestaurant(values,(data)=>{
+            alert("SUCCES");
+            setSaving(false);
+        },(error)=>{
+            alert("ERROR");
+            setSaving(false);
+        })
     }
 
     if (loading) return <>Načítám data pro restauraci</>
@@ -58,7 +68,9 @@ const RestaurantForm = () => {
                                             <MyFormField type={"text"} name={"note"} inputClassName={"col-sm-10"}
                                                          label={"Poznámka:"}
                                                          labelClassName={"col-sm-2 col-form-label"}/>
-                                            <MyFormField type={"file"} name={"titlePhoto"} inputClassName={"col-sm-10"}
+                                            <MyFormField onChange={(e)=>{
+                                                e.preventDefault();
+                                                setSelectedFile(e.target.files[0]);}} type={"file"} name={"file"} inputClassName={"col-sm-10"}
                                                          label={"Titulní fotografie:"}
                                                          labelClassName={"col-sm-2 col-form-label"}/>
                                         </div>

@@ -11,7 +11,9 @@ public class Photo {
     private Integer id;
 
     @Lob
-    private Blob photo;
+    private byte[] photo;
+
+    private String filename;
 
     @ManyToOne
     @JoinColumn(nullable = true, name = "userId")
@@ -32,11 +34,11 @@ public class Photo {
         this.id = id;
     }
 
-    public Blob getPhoto() {
+    public byte[] getPhoto() {
         return photo;
     }
 
-    public void setPhoto(Blob photo) {
+    public void setPhoto(byte[] photo) {
         this.photo = photo;
     }
 
@@ -62,5 +64,13 @@ public class Photo {
 
     public void setDeletedAt(Date deletedAt) {
         this.deletedAt = deletedAt;
+    }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
     }
 }

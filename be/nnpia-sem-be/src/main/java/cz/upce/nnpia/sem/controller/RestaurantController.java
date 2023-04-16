@@ -1,7 +1,9 @@
 package cz.upce.nnpia.sem.controller;
 
 import cz.upce.nnpia.sem.dto.RestaurantDto;
+import cz.upce.nnpia.sem.entity.Photo;
 import cz.upce.nnpia.sem.entity.Restaurant;
+import cz.upce.nnpia.sem.service.PhotoService;
 import cz.upce.nnpia.sem.service.RestaurantService;
 import cz.upce.nnpia.sem.service.UserService;
 import org.modelmapper.ModelMapper;
@@ -9,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,15 +22,29 @@ public class RestaurantController {
 
     private final RestaurantService restaurantService;
     private final UserService userService;
+    private final PhotoService photoService;
 
-    public RestaurantController(RestaurantService restaurantService,UserService userService) {
+    public RestaurantController(RestaurantService restaurantService, UserService userService, PhotoService photoService) {
         this.restaurantService = restaurantService;
         this.userService = userService;
+        this.photoService = photoService;
     }
 
     @PostMapping
     public ResponseEntity<?> create(@RequestBody RestaurantDto restaurantDto){
-        Restaurant createdRestaurant = restaurantService.createRestaurant(convertToEntity(restaurantDto));
+        Photo photo = null;
+        try{
+            photo = photoService.createPhoto(restaurantDto.getPhotoTitle(), null, null);
+        }catch (IOException ex){
+            photo = null;
+        }
+        Restaurant rest = new Restaurant();
+        rest.setName(restaurantDto.getName());
+        rest.setNote(restaurantDto.getNote());
+        rest.setPhoto(photo);
+        rest.setAddress(restaurantDto.getAddress());
+        rest.setAdmin(null);
+        Restaurant createdRestaurant = restaurantService.createRestaurant(rest);
         if(createdRestaurant==null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(convertToDto(createdRestaurant),HttpStatus.OK);
     }
