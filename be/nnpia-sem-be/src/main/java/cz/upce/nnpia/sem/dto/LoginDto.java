@@ -12,6 +12,19 @@ public class LoginDto {
 
     private Role role;
 
+    public LoginDto(String email, String password, String token, Role role) {
+        this.email = email;
+        this.password = password;
+        this.token = token;
+        this.role = role;
+    }
+
+    public LoginDto(String email, String token, Role role) {
+        this.email = email;
+        this.token = token;
+        this.role = role;
+    }
+
     public String getEmail() {
         return email;
     }

@@ -3,20 +3,23 @@ package cz.upce.nnpia.sem.controller;
 import cz.upce.nnpia.sem.dto.LoginDto;
 import cz.upce.nnpia.sem.dto.UserDto;
 import cz.upce.nnpia.sem.entity.User;
-import cz.upce.nnpia.sem.jwtconfig.JwtUtils;
+import cz.upce.nnpia.sem.security.JwtRequest;
+import cz.upce.nnpia.sem.security.JwtTokenUtil;
 import cz.upce.nnpia.sem.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 
@@ -27,16 +30,13 @@ public class UserController {
 
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
-    private final JwtUtils jwtUtils;
+    private final JwtTokenUtil jwtTokenUtil;
 
-    private final PasswordEncoder encoder;
 
-    public UserController(UserService userService, JwtUtils jwtUtils, PasswordEncoder encoder,AuthenticationManager manager) {
+    public UserController(UserService userService, JwtTokenUtil jwtTokenUtil, AuthenticationManager manager) {
         this.userService = userService;
-        this.jwtUtils = jwtUtils;
-        this.encoder = encoder;
+        this.jwtTokenUtil = jwtTokenUtil;
         this.authenticationManager = manager;
-
     }
 
     @GetMapping
@@ -80,21 +80,13 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    private ResponseEntity<?> login(@RequestBody LoginDto loginDto){
-        User user = userService.loginUser(loginDto.getEmail(), loginDto.getPassword());
-        if (user == null) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword())
-        );
-        String jwt = jwtUtils.generateJwtToken(authentication);
+    private ResponseEntity<?> login(@RequestBody JwtRequest authenticationRequest) throws Exception {
+        authenticate(authenticationRequest.getEmail(), authenticationRequest.getPassword());
 
-        LoginDto response = new LoginDto();
-        response.setRole(user.getRole());
-        response.setEmail(user.getEmail());
-        response.setToken(jwt);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        final User user = userService.loginUser(authenticationRequest.getEmail(), authenticationRequest.getPassword());
+        final String token = jwtTokenUtil.generateToken(user.getEmail());
+
+        return new ResponseEntity<>(new LoginDto(user.getEmail(),token,user.getRole()), HttpStatus.OK);
     }
 
     private UserDto convertToDto(User user){
@@ -105,5 +97,18 @@ public class UserController {
     private User convertToEntity(UserDto userDto) {
         ModelMapper modelMapper = new ModelMapper();
         return modelMapper.map(userDto, User.class);
+    }
+
+    private void authenticate(String username, String password) throws Exception {
+        Objects.requireNonNull(username);
+        Objects.requireNonNull(password);
+
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+        } catch (DisabledException e) {
+            throw new Exception("USER_DISABLED", e);
+        } catch (BadCredentialsException e) {
+            throw new Exception("INVALID_CREDENTIALS", e);
+        }
     }
 }

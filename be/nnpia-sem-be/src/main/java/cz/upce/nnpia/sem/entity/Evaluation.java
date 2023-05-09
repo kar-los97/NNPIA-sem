@@ -19,7 +19,7 @@ public class Evaluation {
     private Date createdAt;
 
     @ManyToOne
-    @JoinColumn(nullable = false,name = "userId")
+    @JoinColumn(nullable = true,name = "userId")
     private User user;
 
     @ManyToOne

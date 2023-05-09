@@ -2,14 +2,19 @@ package cz.upce.nnpia.sem.dto;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 public class RestaurantDto {
     private int id;
     private String address;
     private String name;
     private String note;
     private int adminId;
+    private int photoId;
+    private List<EvaluationDto> evaluation;
+    private int stars;
 
-    private MultipartFile photoTitle;
+
 
     public int getId() {
         return id;
@@ -51,11 +56,27 @@ public class RestaurantDto {
         this.adminId = adminId;
     }
 
-    public MultipartFile getPhotoTitle() {
-        return photoTitle;
+    public int getPhotoId() {
+        return photoId;
     }
 
-    public void setPhotoTitle(MultipartFile photoTitle) {
-        this.photoTitle = photoTitle;
+    public void setPhotoId(int photoId) {
+        this.photoId = photoId;
+    }
+
+    public List<EvaluationDto> getEvaluation() {
+        return evaluation;
+    }
+
+    public void setEvaluation(List<EvaluationDto> evaluation) {
+        this.evaluation = evaluation;
+    }
+
+    public int getStars() {
+        return stars;
+    }
+
+    public void setStars(int stars) {
+        this.stars = stars;
     }
 }

@@ -23,26 +23,24 @@ public class PhotoService {
         this.userRepository = userRepository;
     }
 
-    public Photo createPhoto(MultipartFile file, Integer userId,Integer restaurantId) throws IOException {
+    public Photo createPhoto(MultipartFile file, Integer userId, Integer restaurantId) throws IOException {
         User user = null;
         Restaurant restaurant = null;
-        if(userId!=null){
+        if (userId != null) {
             user = userRepository.getUserByIdAndDeletedAtIsNull(userId);
-        }if(restaurantId!=null){
+        }
+        if (restaurantId != null) {
             restaurant = restaurantRepository.getByIdAndDeletedAtIsNull(restaurantId);
         }
 
 
-        if(user!=null){
-            Photo photo = new Photo();
-            photo.setUser(user);
-            photo.setPhoto(file.getBytes());
-            photo.setFilename(file.getOriginalFilename());
-            photo.setRestaurant(restaurant);
-            return photoRepository.save(photo);
-        }else{
-            return null;
-        }
+        Photo photo = new Photo();
+        photo.setUser(user);
+        photo.setPhoto(file.getBytes());
+        photo.setFilename(file.getOriginalFilename());
+        photo.setPhotoType(file.getContentType());
+        photo.setRestaurant(restaurant);
+        return photoRepository.save(photo);
 
 
     }

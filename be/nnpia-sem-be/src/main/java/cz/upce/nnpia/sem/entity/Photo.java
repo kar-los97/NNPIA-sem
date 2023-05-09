@@ -13,6 +13,8 @@ public class Photo {
     @Lob
     private byte[] photo;
 
+    private String photoType;
+
     private String filename;
 
     @ManyToOne
@@ -26,6 +28,15 @@ public class Photo {
     @JoinColumn(nullable = true, name = "restaurantId")
     private Restaurant restaurant;
 
+
+
+    public String getPhotoType() {
+        return photoType;
+    }
+
+    public void setPhotoType(String photoType) {
+        this.photoType = photoType;
+    }
     public Integer getId() {
         return id;
     }

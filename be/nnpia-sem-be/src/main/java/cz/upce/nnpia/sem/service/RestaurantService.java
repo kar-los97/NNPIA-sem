@@ -49,4 +49,7 @@ public class RestaurantService {
     }
 
 
+    public List<Restaurant> filterRestaurants(String filter) {
+        return restaurantRepository.searchAllByAddressContainsOrNameContainsAndDeletedAtIsNull(filter,filter);
+    }
 }

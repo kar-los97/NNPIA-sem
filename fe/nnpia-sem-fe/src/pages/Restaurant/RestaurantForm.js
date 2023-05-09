@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from "react";
-import {useParams} from "react-router-dom";
+import {Link, useHistory, useParams} from "react-router-dom";
 import {apiCreateRestaurant, apiGetRestaurantById} from "./Actions";
 import MyForm from "../../components/Form/MyForm";
 import MyFormField from "../../components/Form/MyFormField";
+import cogoToast from "cogo-toast";
 
 const RestaurantForm = () => {
     let [loading, setLoading] = useState(false);
@@ -10,6 +11,7 @@ const RestaurantForm = () => {
     let [data, setData] = useState(null);
     let [selectedFile, setSelectedFile] = useState(null);
     const {id} = useParams();
+    let history = useHistory();
 
     useEffect(() => {
         if (id) {
@@ -20,17 +22,23 @@ const RestaurantForm = () => {
             }, (err) => {
                 setLoading(false);
                 setData(null);
+                cogoToast.error("Nepodařilo se načíst detail restaurace");
+                history.push("/restaurant/my")
             })
         }
     }, [])
     const submit = (values) => {
         alert(JSON.stringify(values));
-        values.photoTitle = selectedFile;
+        let data = new FormData();
+        data.append('restaurant', new Blob([JSON.stringify(values)], {
+            type: "application/json"
+        }));
+        data.append('photoTitle', selectedFile);
         setSaving(true);
-        apiCreateRestaurant(values,(data)=>{
+        apiCreateRestaurant(data, (data) => {
             alert("SUCCES");
             setSaving(false);
-        },(error)=>{
+        }, (error) => {
             alert("ERROR");
             setSaving(false);
         })
@@ -39,11 +47,13 @@ const RestaurantForm = () => {
     if (loading) return <>Načítám data pro restauraci</>
     else {
         return (
-            <div className={"d-flex align-items-center justify-content-center"}>
-                <div className={"card w-100 text-center align-content-center"}>
+            <div className={"d-flex flex-column min-vh-100 justify-content-center align-items-center"}
+                 style={{height: "80vh"}}>
+                <div className={"card w-100 text-center align-content-center shadow-lg"}>
                     <div className={"card-header bg-info justify-content-center text-center"}>
-                        <div className={"text-xl text-capitalize"}>Restaurace</div>
-                        <div className={"card-subtitle"}>{id ? "Editace" : "Přidání"}</div>
+                        <div className={"text-xl text-capitalize"}><h2 className={"display-4"}>Restaurace</h2></div>
+                        <div className={"card-subtitle"}><h3 className={"display-6"}>{id ? "Editace" : "Přidání"}</h3>
+                        </div>
 
                     </div>
                     <div className={"card-body bg-light"}>
@@ -68,11 +78,12 @@ const RestaurantForm = () => {
                                             <MyFormField type={"text"} name={"note"} inputClassName={"col-sm-10"}
                                                          label={"Poznámka:"}
                                                          labelClassName={"col-sm-2 col-form-label"}/>
-                                            <MyFormField onChange={(e)=>{
+                                            <MyFormField onChange={(e) => {
                                                 e.preventDefault();
-                                                setSelectedFile(e.target.files[0]);}} type={"file"} name={"file"} inputClassName={"col-sm-10"}
+                                                setSelectedFile(e.target.files[0]);
+                                            }} type={"file"} name={"file"} inputClassName={"col-sm-10 mt-3"}
                                                          label={"Titulní fotografie:"}
-                                                         labelClassName={"col-sm-2 col-form-label"}/>
+                                                         labelClassName={"col-sm-2 col-form-label mt-3"}/>
                                         </div>
                                         <button disabled={saving} onClick={handleSubmit}
                                                 className={"btn bg-info text-white"}>Odeslat

@@ -11,16 +11,16 @@ import java.util.List;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    private final PasswordEncoder encoder;
-    public UserService(UserRepository userRepository, PasswordEncoder encoder) {
+
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.encoder = encoder;
     }
 
     public User addUser(User user){
         User existingEmail = userRepository.getUserByEmailAndDeletedAtIsNull(user.getEmail());
         if(existingEmail!=null) return null;
-        user.setPassword(encoder.encode(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
@@ -30,6 +30,10 @@ public class UserService {
 
     public User getById(int id){
         return userRepository.getUserByIdAndDeletedAtIsNull(id);
+    }
+
+    public User getByEmail(String email){
+        return userRepository.getUserByEmailAndDeletedAtIsNull(email);
     }
 
     public User updateUser(User user,int id){
@@ -42,7 +46,7 @@ public class UserService {
         userToUpdate.setLastname(user.getLastname());
         userToUpdate.setEmail(user.getEmail());
         if(user.getPassword()!=null){
-            userToUpdate.setPassword(encoder.encode(user.getPassword()));
+            userToUpdate.setPassword(passwordEncoder.encode(user.getPassword()));
         }
         userToUpdate.setLastUpdate(new Date());
         return userRepository.save(userToUpdate);
@@ -56,7 +60,7 @@ public class UserService {
 
     public User loginUser(String email, String password){
         User user = userRepository.getUserByEmailAndDeletedAtIsNull(email);
-        if(encoder.matches(password,user.getPassword())){
+        if(passwordEncoder.matches(password,user.getPassword())){
             return user;
         }else{
             return null;

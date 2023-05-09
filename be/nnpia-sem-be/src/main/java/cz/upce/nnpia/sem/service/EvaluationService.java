@@ -52,8 +52,12 @@ public class EvaluationService {
         return evaluationRepository.findAllByRestaurant(restaurant);
     }
 
-    public List<Evaluation> getAllEvaluationsToUser(int userId){
-        User user = userRepository.getUserByIdAndDeletedAtIsNull(userId);
+    public Float getAvgStarsToRestaurant(int restaurantId){
+        Restaurant restaurant = restaurantRepository.getByIdAndDeletedAtIsNull(restaurantId);
+        return evaluationRepository.getAvgStarsToRestaurant(restaurant);
+    }
+    public List<Evaluation> getAllEvaluationsToUser(String userEmail){
+        User user = userRepository.getUserByEmailAndDeletedAtIsNull(userEmail);
         return evaluationRepository.findAllByUser(user);
     }
 

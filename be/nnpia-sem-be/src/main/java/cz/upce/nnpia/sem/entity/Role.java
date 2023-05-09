@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 
 public enum Role {
-    ADMIN, USER
+    ROLE_Admin, ROLE_User
 
 
 }

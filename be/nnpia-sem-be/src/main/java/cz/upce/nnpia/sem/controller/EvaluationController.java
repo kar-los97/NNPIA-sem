@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,9 +32,9 @@ public class EvaluationController {
         return new ResponseEntity<>(findedEvaluations.stream().map(this::convertToDto).collect(Collectors.toList()),HttpStatus.OK);
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<?> getAllToUser(@PathVariable int userId){
-        List<Evaluation> findedEvaluations = evaluationService.getAllEvaluationsToUser(userId);
+    @GetMapping("/user/{userEmail}")
+    public ResponseEntity<?> getAllToUser(@PathVariable String userEmail){
+        List<Evaluation> findedEvaluations = evaluationService.getAllEvaluationsToUser(userEmail);
         if(findedEvaluations==null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(findedEvaluations.stream().map(this::convertToDto).collect(Collectors.toList()),HttpStatus.OK);
     }
@@ -52,6 +53,7 @@ public class EvaluationController {
         return new ResponseEntity<>(convertToDto(evaluation),HttpStatus.OK);
     }
 
+    @Transactional
     @PostMapping
     public ResponseEntity<?> create(@RequestBody EvaluationDto evaluationDto){
         Evaluation createdEvaluation = evaluationService.create(convertToEntity(evaluationDto),evaluationDto.getRestaurantId(),evaluationDto.getUserId());

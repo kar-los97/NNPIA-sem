@@ -2,8 +2,9 @@ import React, {useEffect, useState} from "react";
 import MyForm from "../../components/Form/MyForm";
 import MyFormField from "../../components/Form/MyFormField";
 import {apiLoginUser} from "./Actions";
-import {useHistory} from "react-router-dom";
+import {Link, useHistory} from "react-router-dom";
 import {axios} from "../../axiosConfig";
+import cogoToast from 'cogo-toast';
 
 const LoginForm = ({setLoggedInUser}) => {
     let [saving, setSaving] = useState(false);
@@ -15,18 +16,26 @@ const LoginForm = ({setLoggedInUser}) => {
 
     const submit = (values) => {
         setSaving(true);
-        alert(JSON.stringify(values));
-        apiLoginUser(values,(result)=>{
-            alert(JSON.stringify(result));
-            localStorage.setItem('role',result.role);
-            localStorage.setItem('email',result.email);
-            axios.defaults.headers.common['Authorization'] = "Bearer "+result.token;
+        cogoToast.loading("Probíhá přihlašování...");
+        apiLoginUser(values, (result) => {
+            cogoToast.success("Byl jste přihlášen.")
+            localStorage.setItem('role', result.role.substring(5));
+            localStorage.setItem('email', result.email);
+            axios.defaults.headers.common['Authorization'] = "Bearer " + result.token;
             setLoggedInUser(result);
             history.push("/");
             setSaving(false);
-        },(error)=>{
+        }, (error) => {
+            cogoToast.error("Během přihlašování nastala chyba.")
             setSaving(false);
         })
+    }
+
+    const withoutLogin = () =>{
+        localStorage.setItem('role', "NON_REGISTER");
+        localStorage.setItem('email',"");
+        setLoggedInUser({'email':"",'role':"NON_REGISTER"});
+        history.push("/");
     }
 
 
@@ -48,17 +57,24 @@ const LoginForm = ({setLoggedInUser}) => {
                 return errors;
             }}
             render={(handleSubmit) => (
-                <div className={"container-fluid p-3"}>
-                    <div className={"row mb-3"}>
-                        <MyFormField type={"email"} name={"email"} inputClassName={"col-sm-10"} label={"Email:"}
-                                     labelClassName={"col-sm-2 col-form-label"}/>
+                <div className={"d-flex flex-column min-vh-100 justify-content-center align-items-center"}>
+                    <div className={"container-fluid p-3"}>
+                        <div className={"row mb-3"}>
+                            <MyFormField type={"email"} name={"email"} inputClassName={"col-sm-10"} label={"Email:"}
+                                         labelClassName={"col-sm-2 col-form-label"}/>
+                        </div>
+                        <div className={"row mb-3"}>
+                            <MyFormField type={"password"} name={"password"} inputClassName={"col-sm-10"}
+                                         label={"Heslo:"}
+                                         labelClassName={"col-sm-2 col-form-label"}/>
+                        </div>
+                        <button disabled={saving} onClick={handleSubmit} className={"btn bg-info text-white"}>
+                            Přihlásit se
+                        </button>
+                        <div className={"row m-3 justify-content-center w-100"}>
+                            <span> <Link  onClick={withoutLogin}>Pokračovat bez příhlášení</Link></span>
+                        </div>
                     </div>
-                    <div className={"row mb-3"}>
-                        <MyFormField type={"password"} name={"password"} inputClassName={"col-sm-10"} label={"Heslo:"}
-                                     labelClassName={"col-sm-2 col-form-label"}/>
-                    </div>
-                    <button disabled={saving} onClick={handleSubmit} className={"btn bg-info text-white"}>Přihlásit se
-                    </button>
                 </div>
             )
             }

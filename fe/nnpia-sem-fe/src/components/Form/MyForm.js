@@ -9,7 +9,7 @@ const MyForm = ({
                 }) => {
 
     return (
-        <Form initialValues={initialValues} onSubmit={onSubmit}
+        <Form  initialValues={initialValues} onSubmit={onSubmit}
               validate={values => validate(values)}
               render={({handleSubmit}) => render(handleSubmit)}
         />

@@ -22,6 +22,10 @@ const App = () => {
     const authorize = () =>{
         let email = localStorage.getItem('email');
         let role = localStorage.getItem('role');
+        if(!role && role==="NON_REGISTER"){
+            setLoggedInUser({"email":email,"role":role});
+            setLoading(false);
+        }
         if(!role || !email){
             setLoading(false);
             history.push("/login");
