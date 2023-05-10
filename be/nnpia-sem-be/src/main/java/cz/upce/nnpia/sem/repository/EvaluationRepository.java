@@ -17,7 +17,7 @@ public interface EvaluationRepository extends JpaRepository<Evaluation,Integer> 
 
     List<Evaluation> findAllByRestaurant(Restaurant restaurant);
 
-    List<Evaluation> findAllByUser(User user);
+    List<Evaluation> findAllByUserAndDeletedAtIsNullAndRestaurantDeletedAtIsNull(User user);
 
     @Query("SELECT avg(e.stars) FROM Evaluation e where e.restaurant=:restaurant")
     Float getAvgStarsToRestaurant(@Param("restaurant") Restaurant restaurant);

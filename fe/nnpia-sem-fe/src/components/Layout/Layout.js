@@ -7,10 +7,9 @@ const Layout = ({children, loggedInUser}) => {
     return (
         <div className={""}>
             <Menu loggedInUser={loggedInUser}/>
-                <div className={"container"}>
+                <div className={"container overflow-auto"}>
                     {children}
                 </div>
-            <Footer/>
         </div>
     )
 }

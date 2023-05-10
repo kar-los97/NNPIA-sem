@@ -58,7 +58,7 @@ public class EvaluationService {
     }
     public List<Evaluation> getAllEvaluationsToUser(String userEmail){
         User user = userRepository.getUserByEmailAndDeletedAtIsNull(userEmail);
-        return evaluationRepository.findAllByUser(user);
+        return evaluationRepository.findAllByUserAndDeletedAtIsNullAndRestaurantDeletedAtIsNull(user);
     }
 
     public Evaluation update(Evaluation evaluation,int restaurantId, Integer userId, int id){

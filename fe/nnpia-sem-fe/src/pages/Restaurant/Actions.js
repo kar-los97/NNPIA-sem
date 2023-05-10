@@ -37,3 +37,9 @@ export const apiGetFilterRestaurants = (filter,callback,error) =>{
         .then((response)=>callback(response.data))
         .catch(err=>error(err))
 }
+
+export const apiDeleteRestaurant = (id,callback,error) =>{
+    axios.delete(url+"/"+id)
+        .then((response)=>callback(response.data))
+        .catch(err=>error(err))
+}

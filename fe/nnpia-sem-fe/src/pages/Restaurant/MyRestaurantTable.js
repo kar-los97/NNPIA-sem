@@ -1,11 +1,13 @@
 import React from "react";
 import MyTable from "../../components/Table/MyTable";
-import {AiFillEdit, AiFillStar, AiOutlineStar} from "react-icons/ai";
-import {Link} from "react-router-dom";
-import {FiEdit} from "react-icons/fi";
+import {AiFillDelete, AiFillEdit, AiFillStar, AiOutlineStar} from "react-icons/ai";
+import {Link, useHistory} from "react-router-dom";
+import {apiDeleteRestaurant} from "./Actions";
+import cogoToast from "cogo-toast";
 
 const MyRestaurantTable = ({data}) => {
 
+    const history = useHistory();
 
     const getStarsIcons=(stars)=>{
         let starCount = [];
@@ -21,6 +23,16 @@ const MyRestaurantTable = ({data}) => {
         })
         return(<div className={"d-flex flex-row"}>{iconsD}</div>);
     }
+
+    const deleteRestaurant = (id) =>{
+        apiDeleteRestaurant(id,(data)=>{
+            cogoToast.success("Restaurace byla odstraněna");
+            history.push("/");
+        },(error)=>{
+            cogoToast.error("Nepodařilo se odstranit restauraci")
+        })
+    }
+
     const columns = React.useMemo(() => [
         {
             Header: 'Adresa',
@@ -40,6 +52,12 @@ const MyRestaurantTable = ({data}) => {
                 <Link to={"/restaurant/my/detail/"+d.id}>
                     <button className={'rounded-circle bg-info text-white'}><AiFillEdit size={15}/></button>
                 </Link>
+            )
+        },
+        {
+            Header: "Odstranit",
+            accessor: d => (
+                    <button className={'rounded-circle bg-info text-white'} onClick={()=>deleteRestaurant(d.id)}><AiFillDelete size={15}/></button>
             )
         }
     ], [])

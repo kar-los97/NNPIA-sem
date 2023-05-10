@@ -2,10 +2,14 @@ package cz.upce.nnpia.sem.controller;
 
 import cz.upce.nnpia.sem.dto.EvaluationDto;
 import cz.upce.nnpia.sem.entity.Evaluation;
+import cz.upce.nnpia.sem.entity.User;
 import cz.upce.nnpia.sem.service.EvaluationService;
+import cz.upce.nnpia.sem.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
@@ -18,9 +22,11 @@ import java.util.stream.Collectors;
 public class EvaluationController {
 
     private final EvaluationService evaluationService;
+    private final UserService userService;
 
-    public EvaluationController(EvaluationService evaluationService) {
+    public EvaluationController(EvaluationService evaluationService, UserService userService) {
         this.evaluationService = evaluationService;
+        this.userService = userService;
     }
 
 
@@ -32,6 +38,7 @@ public class EvaluationController {
         return new ResponseEntity<>(findedEvaluations.stream().map(this::convertToDto).collect(Collectors.toList()),HttpStatus.OK);
     }
 
+    @Transactional
     @GetMapping("/user/{userEmail}")
     public ResponseEntity<?> getAllToUser(@PathVariable String userEmail){
         List<Evaluation> findedEvaluations = evaluationService.getAllEvaluationsToUser(userEmail);
@@ -56,6 +63,14 @@ public class EvaluationController {
     @Transactional
     @PostMapping
     public ResponseEntity<?> create(@RequestBody EvaluationDto evaluationDto){
+        Authentication auth  = SecurityContextHolder.getContext().getAuthentication();
+        User user = null;
+        if(auth.getPrincipal() instanceof org.springframework.security.core.userdetails.User){
+            user = userService.getByEmail(((org.springframework.security.core.userdetails.User)auth.getPrincipal()).getUsername());
+        }
+        if(user!=null){
+            evaluationDto.setUserId(user.getId());
+        }
         Evaluation createdEvaluation = evaluationService.create(convertToEntity(evaluationDto),evaluationDto.getRestaurantId(),evaluationDto.getUserId());
         if(createdEvaluation==null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(convertToDto(createdEvaluation),HttpStatus.OK);
@@ -68,6 +83,7 @@ public class EvaluationController {
         return new ResponseEntity<>(convertToDto(updatedEvaluation),HttpStatus.OK);
     }
 
+    @Transactional
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable int id){
         Evaluation deletedEvaluation = evaluationService.delete(id);

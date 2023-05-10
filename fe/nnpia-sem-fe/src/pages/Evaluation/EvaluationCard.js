@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {EvaluationTable} from "./EvaluationTable";
+import {RestaurantEvaluationTable} from "./RestaurantEvaluationTable";
 import {EvaluationForm} from "./EvaluationForm";
 import {Link, useParams} from "react-router-dom";
 
@@ -33,7 +33,7 @@ export const EvaluationCard = ({evaluation}) => {
                     </div>
                 </div>
                 <div className={"card-body bg-light"}>
-                    <EvaluationTable data={evaluation}/>
+                    <RestaurantEvaluationTable data={evaluation}/>
                 </div>
             </div>
         </div>

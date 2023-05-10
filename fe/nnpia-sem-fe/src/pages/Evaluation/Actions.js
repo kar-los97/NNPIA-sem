@@ -15,3 +15,9 @@ export const apiGetAllMyEvaluation = (email, callback, error) => {
         .then(response => callback(response.data))
         .catch(err => error(err));
 }
+
+export const apiDeleteEvaluation = (id,callback,error)=>{
+    axios.delete(url + "/" + id)
+        .then(response => callback(response.data))
+        .catch(err => error(err));
+}

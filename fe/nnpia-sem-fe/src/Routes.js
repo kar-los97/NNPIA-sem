@@ -5,6 +5,7 @@ import Restaurants from "./pages/Restaurant/Restaurants";
 import RestaurantForm from "./pages/Restaurant/RestaurantForm";
 import RestaurantEvaluation from "./pages/Restaurant/RestaurantEvaluation";
 import {EvaluationForm} from "./pages/Evaluation/EvaluationForm";
+import EvaluationList from "./pages/Evaluation/EvaluationList";
 
 const Routes = () =>{
     return(
@@ -16,6 +17,7 @@ const Routes = () =>{
             <Route exact path={"/restaurant/evaluation/add/:id"} component={EvaluationForm}/>
             <Route exact path={"/restaurant/evaluation/:id"} component={RestaurantEvaluation}/>
             <Route exact path={"/restaurant"} component={Restaurants}/>
+            <Route exact path={"/evaluation"} component={EvaluationList}/>
 
         </Switch>
     )

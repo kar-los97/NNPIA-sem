@@ -105,6 +105,7 @@ public class RestaurantController {
         return new ResponseEntity<>(findedRestaurants.stream().map(this::convertToDto).collect(Collectors.toList()), HttpStatus.OK);
     }
 
+    @Transactional
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable int id) {
         Restaurant deletedRestaurant = restaurantService.delete(id);
