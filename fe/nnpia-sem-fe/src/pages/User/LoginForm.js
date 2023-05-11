@@ -71,9 +71,6 @@ const LoginForm = ({setLoggedInUser}) => {
                         <button disabled={saving} onClick={handleSubmit} className={"btn bg-info text-white"}>
                             Přihlásit se
                         </button>
-                        <div className={"row m-3 justify-content-center w-100"}>
-                            <span> <Link  onClick={withoutLogin}>Pokračovat bez příhlášení</Link></span>
-                        </div>
                     </div>
                 </div>
             )

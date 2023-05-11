@@ -7,7 +7,8 @@ const MyFormField = ({
     inputClassName,
     labelClassName,
     label,
-    onChange = null
+    onChange = null,
+    placeHolder
                      })=>{
 
     if(type==="file"){
@@ -17,7 +18,7 @@ const MyFormField = ({
                     <>
                         <div className={labelClassName}>{label}</div>
                         <div className={inputClassName}>
-                            <input {...input} type={"file"} maxLength={10} accept={"image/png, image/jpeg"} className={"form-control"} onChange={onChange}/>
+                            <input {...input} type={"file"} maxLength={10} accept={"image/png, image/jpeg"} className={"form-control"} onChange={onChange} placeholder={placeHolder}/>
                             {meta.error && meta.touched &&
                                 <div className="text-warning">{meta.error}</div>}
                         </div>
@@ -33,8 +34,8 @@ const MyFormField = ({
                     <>
                         <div className={labelClassName}>{label}</div>
                         <div className={inputClassName}>
-                            {onChange?<input {...input} type={type} className={"form-control"} onChange={onChange}/>:
-                                <input {...input} type={type} className={"form-control"}/>}
+                            {onChange?<input {...input} type={type} className={"form-control"} onChange={onChange} placeholder={placeHolder}/>:
+                                <input {...input} type={type} className={"form-control"} placeholder={placeHolder}/>}
                             {meta.error && meta.touched &&
                                 <div className="text-warning">{meta.error}</div>}
                         </div>

@@ -36,10 +36,11 @@ const RestaurantForm = () => {
         data.append('photoTitle', selectedFile);
         setSaving(true);
         apiCreateRestaurant(data, (data) => {
-            alert("SUCCES");
+            cogoToast.success("Úspěšně uloženo.");
+            history.push("/restaurant/my/detail/"+data.id);
             setSaving(false);
         }, (error) => {
-            alert("ERROR");
+            cogoToast.error("Nastala chyba při ukládání");
             setSaving(false);
         })
     }
@@ -59,7 +60,19 @@ const RestaurantForm = () => {
                     <div className={"card-body bg-light"}>
                         <MyForm initialValues={data} onSubmit={submit}
                                 validate={(values) => {
+                                    let error = {};
+                                    if(!values.name || values.name===""){
+                                        error.name="Zadejte název";
+                                    }if(!selectedFile && !id){
+                                        error.file = "Vyberte prosím titulní obrázek"
+                                    }if(!values.address || values.address===""){
+                                        error.address="Zadejte adresu";
+                                    }if(!values.note || values.note===""){
+                                        error.note="Zadejte poznámku";
+                                    }
 
+
+                                    return error;
                                 }}
                                 render={(handleSubmit) => (
                                     <div className={"container-fluid p-3"}>

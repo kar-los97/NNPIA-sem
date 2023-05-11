@@ -4,35 +4,27 @@ import MyRestaurantTable from "../../pages/Restaurant/MyRestaurantTable";
 import RestaurantTable from "../../pages/Restaurant/RestaurantTable";
 import {apiGetFilterRestaurants} from "../../pages/Restaurant/Actions";
 import cogoToast from "cogo-toast";
+import MyForm from "../Form/MyForm";
+import MyFormField from "../Form/MyFormField";
 
 export const RestaurantList = ({restaurants}) => {
     let role = localStorage.getItem("role");
     const path = window.location.pathname;
-    const [filter, setFilter] = useState(null);
-
-    const timer = useRef(null);
+    const [data,setData] = useState(null);
 
 
 
-    const filterData = () => {
-        if(filter==="" || filter === null) return restaurants;
-        apiGetFilterRestaurants(filter, (data) => {
-            return data;
-        }, (error) => {
-            cogoToast.error("Nepodařilo se nalézt požadované záznamy.")
-            return null;
+    const filterData = (data) => {
+        if(!data || data.filter==="" || data.filter === null ||data.filter === undefined) setData(restaurants);
+        else{
+            apiGetFilterRestaurants(data.filter, (data) => {
+                setData(data);
+            }, (error) => {
+                cogoToast.error("Nepodařilo se nalézt požadované záznamy.")
+                setData(restaurants);
+            })
+        }
 
-        })
-    }
-    const data = React.useMemo(() => {
-        return filterData();
-    }, [filter])
-
-    const onChange = (event) => {
-        clearTimeout(timer.current);
-        timer.current = setTimeout(() => {
-            setFilter(event.target.value)
-        }, 1000)
     }
 
 
@@ -55,10 +47,18 @@ export const RestaurantList = ({restaurants}) => {
                 restaurace</h2>}</div>
     )
     const FilterForm = () => (
-        <div className={"card-subtitle align-items-center"}>
-            <input className={"w-100"} placeholder={"Zadejte hledaný výraz"} type={"text"} name={"filter"}
-                   onChange={onChange}/>
-        </div>
+
+            <MyForm validate={(values)=>{
+
+            }} render={(handleSubmit) => (
+                <div className={"card-subtitle align-items-center d-flex flex-row"}>
+                    <MyFormField type={"text"} name={"filter"} placeHolder={"Zadejte hledaný výraz"} inputClassName={"w-100"} label={""}/>
+                    <button  onClick={handleSubmit}
+                            className={"btn bg-info text-white m-2"}>Filtrovat
+                    </button>
+                </div>
+            )
+            } onSubmit={filterData}/>
     )
 
     return (

@@ -74,19 +74,18 @@ public class RestaurantController {
     }
 
     @Transactional
-    @GetMapping("/{id}")
-    public ResponseEntity<?> get(@PathVariable int id) {
-        Restaurant findedRestaurant = restaurantService.getById(id);
-        if (findedRestaurant == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(convertToDto(findedRestaurant), HttpStatus.OK);
-    }
-
-    @Transactional
     @GetMapping("/search/{filter}")
     public ResponseEntity<?> filter(@PathVariable String filter){
         List<Restaurant> filteredRestaurants = restaurantService.filterRestaurants(filter);
         if(filteredRestaurants==null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(filteredRestaurants.stream().map(this::convertToDto).collect(Collectors.toList()), HttpStatus.OK);
+    }
+    @Transactional
+    @GetMapping("/{id}")
+    public ResponseEntity<?> get(@PathVariable int id) {
+        Restaurant findedRestaurant = restaurantService.getById(id);
+        if (findedRestaurant == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(convertToDto(findedRestaurant), HttpStatus.OK);
     }
     @Transactional
     @GetMapping

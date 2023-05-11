@@ -60,6 +60,7 @@ public class RestaurantControllerTest {
         userService.addUser(user);
     }
 
+
     @Test
     public void testCreateRestaurant() {
         Assertions.assertDoesNotThrow(() -> {
